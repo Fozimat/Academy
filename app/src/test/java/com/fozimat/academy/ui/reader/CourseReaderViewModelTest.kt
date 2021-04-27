@@ -1,24 +1,34 @@
 package com.fozimat.academy.ui.reader
 
 import com.fozimat.academy.data.ContentEntity
+import com.fozimat.academy.data.ModuleEntity
+import com.fozimat.academy.data.source.AcademyRepository
 import com.fozimat.academy.utils.DataDummy
 import org.junit.Test
 
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnitRunner
 
+@RunWith(MockitoJUnitRunner::class)
 class CourseReaderViewModelTest {
 
     private lateinit var viewModel: CourseReaderViewModel
-
     private val dummyCourse = DataDummy.generateDummyCourses()[0]
     private val courseId = dummyCourse.courseId
     private val dummyModules = DataDummy.generateDummyModules(courseId)
     private val moduleId = dummyModules[0].moduleId
 
+    @Mock
+    private lateinit var academyRepository: AcademyRepository
+
     @Before
     fun setUp() {
-        viewModel = CourseReaderViewModel()
+        viewModel = CourseReaderViewModel(academyRepository)
         viewModel.setSelectedCourse(courseId)
         viewModel.setSelectedModule(moduleId)
 
@@ -28,14 +38,18 @@ class CourseReaderViewModelTest {
 
     @Test
     fun getModules() {
+        `when`<ArrayList<ModuleEntity>>(academyRepository.getAllModulesByCourse(courseId)).thenReturn(dummyModules as ArrayList<ModuleEntity>)
         val moduleEntities = viewModel.getModules()
+        verify<AcademyRepository>(academyRepository).getAllModulesByCourse(courseId)
         assertNotNull(moduleEntities)
         assertEquals(7, moduleEntities.size.toLong())
     }
 
     @Test
     fun getSelectedModule() {
+        `when`(academyRepository.getContent(courseId, moduleId)).thenReturn(dummyModules[0])
         val moduleEntity = viewModel.getSelectedModule()
+        verify(academyRepository).getContent(courseId, moduleId)
         assertNotNull(moduleEntity)
         val contentEntity = moduleEntity.contentEntity
         assertNotNull(contentEntity)
