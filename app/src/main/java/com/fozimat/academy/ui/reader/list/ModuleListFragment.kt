@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.fozimat.academy.R
 import com.fozimat.academy.data.ModuleEntity
 import com.fozimat.academy.databinding.FragmentModuleListBinding
+import com.fozimat.academy.ui.academy.viewmodel.ViewModelFactory
 import com.fozimat.academy.ui.reader.CourseReaderActivity
 import com.fozimat.academy.ui.reader.CourseReaderCallback
 import com.fozimat.academy.ui.reader.CourseReaderViewModel
@@ -40,8 +41,8 @@ class ModuleListFragment : Fragment(), MyAdapterClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[CourseReaderViewModel::class.java]
+        val factory = ViewModelFactory.getInstance(requireActivity())
+        viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
         adapter = ModuleListAdapter(this)
         populateRecyclerView(viewModel.getModules())
     }

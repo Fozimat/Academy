@@ -13,6 +13,7 @@ import com.fozimat.academy.R
 import com.fozimat.academy.data.CourseEntity
 import com.fozimat.academy.databinding.ActivityDetailCourseBinding
 import com.fozimat.academy.databinding.ContentDetailCourseBinding
+import com.fozimat.academy.ui.academy.viewmodel.ViewModelFactory
 import com.fozimat.academy.ui.reader.CourseReaderActivity
 
 class DetailCourseActivity : AppCompatActivity() {
@@ -34,7 +35,8 @@ class DetailCourseActivity : AppCompatActivity() {
         setSupportActionBar(activityDetailCourseBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[DetailCourseViewModel::class.java]
+        val factory = ViewModelFactory.getInstance(this)
+        val viewModel = ViewModelProvider(this, factory)[DetailCourseViewModel::class.java]
 
         val adapter = DetailCourseAdapter()
 
