@@ -5,6 +5,7 @@ import android.os.Looper
 import com.fozimat.academy.data.source.remote.response.ContentResponse
 import com.fozimat.academy.data.source.remote.response.CourseResponse
 import com.fozimat.academy.data.source.remote.response.ModuleResponse
+import com.fozimat.academy.utils.EspressoIdlingResource
 import com.fozimat.academy.utils.JsonHelper
 
 class RemoteDataSource private constructor(private val jsonHelper: JsonHelper) {
@@ -24,23 +25,46 @@ class RemoteDataSource private constructor(private val jsonHelper: JsonHelper) {
     }
 
     fun getAllCourses(callback: LoadCoursesCallback) {
-        handler.postDelayed({ callback.onAllCoursesReceived(jsonHelper.loadCourses()) }, SERVICE_LATENCY_IN_MILLIS)
+        EspressoIdlingResource.increment()
+        handler.postDelayed(
+            {
+                callback.onAllCoursesReceived(jsonHelper.loadCourses())
+                EspressoIdlingResource.decrement()
+            },
+            SERVICE_LATENCY_IN_MILLIS
+        )
     }
 
     fun getModules(courseId: String, callback: LoadModulesCallback) {
-        handler.postDelayed({ callback.onAllModulesReceived(jsonHelper.loadModule(courseId)) }, SERVICE_LATENCY_IN_MILLIS)
+        EspressoIdlingResource.increment()
+        handler.postDelayed(
+            {
+                callback.onAllModulesReceived(jsonHelper.loadModule(courseId))
+                EspressoIdlingResource.decrement()
+            },
+            SERVICE_LATENCY_IN_MILLIS
+        )
     }
 
     fun getContent(moduleId: String, callback: LoadContentCallback) {
-        handler.postDelayed({ callback.onContentReceived(jsonHelper.loadContent(moduleId)) }, SERVICE_LATENCY_IN_MILLIS)
+        EspressoIdlingResource.increment()
+        handler.postDelayed(
+            {
+                callback.onContentReceived(jsonHelper.loadContent(moduleId))
+                EspressoIdlingResource.decrement()
+            },
+            SERVICE_LATENCY_IN_MILLIS
+        )
     }
 
     interface LoadCoursesCallback {
         fun onAllCoursesReceived(courseResponses: List<CourseResponse>)
     }
+
     interface LoadModulesCallback {
         fun onAllModulesReceived(moduleResponses: List<ModuleResponse>)
     }
+
     interface LoadContentCallback {
         fun onContentReceived(contentResponse: ContentResponse)
     }
