@@ -46,4 +46,6 @@ ext {
     archLifecycleVersion = '2.2.0'
     roomVersion = '2.2.3'
     roomRuntimeVersion = '2.3.0'
+
+    pagingVersion = '2.1.1'
 }

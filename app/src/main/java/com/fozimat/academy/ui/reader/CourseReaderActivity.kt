@@ -2,11 +2,17 @@ package com.fozimat.academy.ui.reader
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.fozimat.academy.R
+import com.fozimat.academy.data.source.local.entity.ModuleEntity
 import com.fozimat.academy.viewmodel.ViewModelFactory
 import com.fozimat.academy.ui.reader.content.ModuleContentFragment
 import com.fozimat.academy.ui.reader.list.ModuleListFragment
+import com.fozimat.academy.vo.Resource
+import com.fozimat.academy.vo.Status
 
 class CourseReaderActivity : AppCompatActivity(), CourseReaderCallback {
 
@@ -14,12 +20,20 @@ class CourseReaderActivity : AppCompatActivity(), CourseReaderCallback {
         const val EXTRA_COURSE_ID = "extra_course_id"
     }
 
+    private var isLarge = false
+    private lateinit var viewModel: CourseReaderViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course_reader)
 
+        if (findViewById<View>(R.id.frame_list) != null) {
+            isLarge = true
+        }
+
         val factory = ViewModelFactory.getInstance(this)
-        val viewModel = ViewModelProvider(this, factory)[CourseReaderViewModel::class.java]
+        viewModel = ViewModelProvider(this, factory)[CourseReaderViewModel::class.java]
+        viewModel.modules.observe(this, initObserver)
 
         val bundle = intent.extras
         if (bundle != null) {
@@ -32,10 +46,12 @@ class CourseReaderActivity : AppCompatActivity(), CourseReaderCallback {
     }
 
     override fun moveTo(position: Int, moduleId: String) {
-        val fragment = ModuleContentFragment.newInstance()
-        supportFragmentManager.beginTransaction().add(R.id.frame_container, fragment, ModuleContentFragment.TAG)
-            .addToBackStack(null)
-            .commit()
+        if (!isLarge) {
+            val fragment = ModuleContentFragment.newInstance()
+            supportFragmentManager.beginTransaction().add(R.id.frame_container, fragment, ModuleContentFragment.TAG)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun onBackPressed() {
@@ -48,12 +64,70 @@ class CourseReaderActivity : AppCompatActivity(), CourseReaderCallback {
 
     private fun populateFragment() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        var fragment = supportFragmentManager.findFragmentByTag(ModuleListFragment.TAG)
-        if (fragment == null) {
-            fragment = ModuleListFragment.newInstance()
-            fragmentTransaction.add(R.id.frame_container, fragment, ModuleListFragment.TAG)
-            fragmentTransaction.addToBackStack(null)
+        if (!isLarge) {
+            var fragment = supportFragmentManager.findFragmentByTag(ModuleListFragment.TAG)
+            if (fragment == null) {
+                fragment = ModuleListFragment.newInstance()
+                fragmentTransaction.add(R.id.frame_container, fragment, ModuleListFragment.TAG)
+                fragmentTransaction.addToBackStack(null)
+            }
+            fragmentTransaction.commit()
+        } else {
+            var fragmentList = supportFragmentManager.findFragmentByTag(ModuleListFragment.TAG)
+            if (fragmentList == null) {
+                fragmentList = ModuleListFragment.newInstance()
+                fragmentTransaction.add(R.id.frame_list, fragmentList, ModuleListFragment.TAG)
+            }
+            var fragmentContent = supportFragmentManager.findFragmentByTag(ModuleContentFragment.TAG)
+            if (fragmentContent == null) {
+                fragmentContent = ModuleContentFragment.newInstance()
+                fragmentTransaction.add(R.id.frame_content, fragmentContent, ModuleContentFragment.TAG)
+            }
+            fragmentTransaction.commit()
         }
-        fragmentTransaction.commit()
+    }
+
+    private fun removeObserver() {
+        viewModel.modules.removeObserver(initObserver)
+    }
+    private fun getLastReadFromModules(moduleEntities: List<ModuleEntity>): String? {
+        var lastReadModule: String? = null
+        for (moduleEntity in moduleEntities) {
+            if (moduleEntity.read) {
+                lastReadModule = moduleEntity.moduleId
+                continue
+            }
+            break
+        }
+        return lastReadModule
+    }
+    private val initObserver: Observer<Resource<List<ModuleEntity>>> = Observer{ modules ->
+        if (modules != null) {
+            when (modules.status) {
+                Status.LOADING -> {
+                }
+                Status.SUCCESS -> {
+                    val dataModules: List<ModuleEntity>? = modules.data
+                    if (dataModules != null && dataModules.isNotEmpty()) {
+                        val firstModule = dataModules[0]
+                        val isFirstModuleRead = firstModule.read
+                        if (!isFirstModuleRead) {
+                            val firstModuleId = firstModule.moduleId
+                            viewModel.setSelectedModule(firstModuleId)
+                        } else {
+                            val lastReadModuleId = getLastReadFromModules(dataModules)
+                            if (lastReadModuleId != null) {
+                                viewModel.setSelectedModule(lastReadModuleId)
+                            }
+                        }
+                    }
+                    removeObserver()
+                }
+                Status.ERROR -> {
+                    Toast.makeText(this, "Gagal menampilkan data.", Toast.LENGTH_SHORT).show()
+                    removeObserver()
+                }
+            }
+        }
     }
 }
