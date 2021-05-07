@@ -3,7 +3,7 @@ package com.fozimat.academy.ui.reader.list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.fozimat.academy.data.ModuleEntity
+import com.fozimat.academy.data.source.local.entity.ModuleEntity
 import com.fozimat.academy.databinding.ItemsModuleListCustomBinding
 
 class ModuleListAdapter internal constructor(private val listener: MyAdapterClickListener) : RecyclerView.Adapter<ModuleListAdapter.ModuleViewHolder>() {

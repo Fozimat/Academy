@@ -6,14 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ShareCompat
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fozimat.academy.R
-import com.fozimat.academy.data.CourseEntity
+import com.fozimat.academy.data.source.local.entity.CourseEntity
 import com.fozimat.academy.databinding.FragmentBookmarkBinding
-import com.fozimat.academy.ui.academy.viewmodel.ViewModelFactory
-import com.fozimat.academy.utils.DataDummy
+import com.fozimat.academy.viewmodel.ViewModelFactory
 
 class BookmarkFragment : Fragment(), BookmarkFragmentCallback {
 

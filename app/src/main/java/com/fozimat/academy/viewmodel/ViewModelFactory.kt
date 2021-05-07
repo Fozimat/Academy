@@ -1,11 +1,11 @@
-package com.fozimat.academy.ui.academy.viewmodel
+package com.fozimat.academy.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.fozimat.academy.data.source.AcademyRepository
+import com.fozimat.academy.data.AcademyRepository
 import com.fozimat.academy.ui.academy.AcademyViewModel
-import com.fozimat.academy.ui.academy.di.Injection
+import com.fozimat.academy.di.Injection
 import com.fozimat.academy.ui.bookmark.BookmarkViewModel
 import com.fozimat.academy.ui.detail.DetailCourseViewModel
 import com.fozimat.academy.ui.reader.CourseReaderViewModel

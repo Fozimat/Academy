@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.fozimat.academy.R
-import com.fozimat.academy.data.CourseEntity
+import com.fozimat.academy.data.source.local.entity.CourseEntity
 import com.fozimat.academy.databinding.ItemsBookmarkBinding
 import com.fozimat.academy.ui.detail.DetailCourseActivity
 

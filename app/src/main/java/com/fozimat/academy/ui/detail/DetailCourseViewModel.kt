@@ -1,22 +1,35 @@
 package com.fozimat.academy.ui.detail
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.fozimat.academy.data.CourseEntity
-import com.fozimat.academy.data.ModuleEntity
-import com.fozimat.academy.data.source.AcademyRepository
-import com.fozimat.academy.utils.DataDummy
+import com.fozimat.academy.data.source.local.entity.CourseEntity
+import com.fozimat.academy.data.source.local.entity.ModuleEntity
+import com.fozimat.academy.data.AcademyRepository
+import com.fozimat.academy.data.source.local.entity.CourseWithModule
+import com.fozimat.academy.vo.Resource
 
 class DetailCourseViewModel(private val academyRepository: AcademyRepository) : ViewModel() {
-
-    private lateinit var courseId: String
+    val courseId = MutableLiveData<String>()
 
     fun setSelectedCourse(courseId: String) {
-        this.courseId = courseId
+        this.courseId.value = courseId
     }
 
-    fun getCourse(): LiveData<CourseEntity> = academyRepository.getCourseWithModules(courseId)
+    var courseModule: LiveData<Resource<CourseWithModule>> = Transformations.switchMap(courseId) { mCourseId ->
+        academyRepository.getCourseWithModules(mCourseId)
+    }
 
-
-    fun getModules(): LiveData<List<ModuleEntity>> = academyRepository.getAllModulesByCourse(courseId)
+    fun setBookmark() {
+        val moduleResource = courseModule.value
+        if (moduleResource != null) {
+            val courseWithModule = moduleResource.data
+            if (courseWithModule != null) {
+                val courseEntity = courseWithModule.mCourse
+                val newState = !courseEntity.bookmarked
+                academyRepository.setCourseBookmark(courseEntity, newState)
+            }
+        }
+    }
 }

@@ -2,7 +2,9 @@ package com.fozimat.academy.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.fozimat.academy.data.source.AcademyDataSource
+import com.fozimat.academy.data.source.local.entity.ContentEntity
+import com.fozimat.academy.data.source.local.entity.CourseEntity
+import com.fozimat.academy.data.source.local.entity.ModuleEntity
 import com.fozimat.academy.data.source.remote.RemoteDataSource
 import com.fozimat.academy.data.source.remote.response.ContentResponse
 import com.fozimat.academy.data.source.remote.response.CourseResponse

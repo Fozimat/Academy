@@ -2,9 +2,8 @@ package com.fozimat.academy.ui.bookmark
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.fozimat.academy.data.CourseEntity
-import com.fozimat.academy.data.source.AcademyRepository
-import com.fozimat.academy.utils.DataDummy
+import com.fozimat.academy.data.source.local.entity.CourseEntity
+import com.fozimat.academy.data.AcademyRepository
 
 class BookmarkViewModel(private val academyRepository: AcademyRepository) : ViewModel() {
 

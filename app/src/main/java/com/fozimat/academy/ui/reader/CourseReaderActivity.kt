@@ -2,10 +2,9 @@ package com.fozimat.academy.ui.reader
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.fozimat.academy.R
-import com.fozimat.academy.ui.academy.viewmodel.ViewModelFactory
+import com.fozimat.academy.viewmodel.ViewModelFactory
 import com.fozimat.academy.ui.reader.content.ModuleContentFragment
 import com.fozimat.academy.ui.reader.list.ModuleListFragment
 

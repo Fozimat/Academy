@@ -3,9 +3,9 @@ package com.fozimat.academy.ui.reader
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.fozimat.academy.data.ContentEntity
-import com.fozimat.academy.data.ModuleEntity
-import com.fozimat.academy.data.source.AcademyRepository
+import com.fozimat.academy.data.source.local.entity.ContentEntity
+import com.fozimat.academy.data.source.local.entity.ModuleEntity
+import com.fozimat.academy.data.AcademyRepository
 import com.fozimat.academy.utils.DataDummy
 import org.junit.Test
 
